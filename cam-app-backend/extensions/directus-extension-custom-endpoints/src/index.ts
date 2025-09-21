@@ -13,9 +13,10 @@ export default defineEndpoint({
     router.get("/token/:room", async (req: any, res: any) => {
       try {
         const { room } = req.params;
-        const { role } = req.query;
+        const { role, name } = req.query;
         console.log("Room", room);
         console.log("Role", role);
+        console.log("Name", name);
         const user = req.accountability?.user;
         console.log("User: ", user);
 
@@ -25,7 +26,7 @@ export default defineEndpoint({
 
         const at = new AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET, {
           identity: String(user),
-          name: req.accountability?.user,
+          name: name || String(user),
         });
 
         at.addGrant({

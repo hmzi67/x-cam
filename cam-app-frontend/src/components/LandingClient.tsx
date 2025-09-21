@@ -2,14 +2,11 @@
 import Sidebar from "@/components/Sidebar";
 import Filters from "@/components/Filters";
 import StreamGrid from "@/components/StreamGrid";
-import { Box } from "@mui/material";
-import { useRouter } from "next/navigation";
-import { Categories, Streams } from "@/types/Schema";
 import Header from "./Header";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "@/lib/hooks";
 import { getUser } from "@/lib/features/userSlice";
-import { useFormState } from "react-dom";
+import { Categories, Streams } from "@/types/Schema";
 
 export default function Landing({
   streams,
@@ -19,48 +16,49 @@ export default function Landing({
   categories: Categories[];
 }) {
   const userState = useAppSelector(getUser);
-  console.log({ userState });
   const isLoggedIn = !!userState?.id;
   const balance = 0;
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  const router = useRouter();
-  const handleFilterChange = async (key: string, value: string) => {
+  // Filter handler for Filters component
+  const handleFilterChange = (key: string, value: string) => {
     const query = new URLSearchParams();
     if (value) query.set(key, value);
-    router.push(`/stream?${query.toString()}`); // Simple redirect for now; enhance with search params
+    window.location.href = `/stream?${query.toString()}`;
   };
   if (!isMounted) return null;
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        bgcolor: "#121212",
-        color: "white",
-        minHeight: "100vh",
-      }}
-    >
+    <div className="min-h-screen bg-[#181818] text-white flex flex-col">
+      {/* Header */}
       <Header categories={categories || []} />
-      <Box sx={{ display: "flex", p: 2 }}>
-        <Sidebar categories={categories || []} />
-        <Box sx={{ flexGrow: 1, ml: 2 }}>
-          <Filters
-            region=""
-            age=""
-            ethnicity=""
-            fetish=""
-            language=""
-            onFilterChange={handleFilterChange}
-          />
+      <div className="flex flex-1 w-full">
+        {/* Sidebar */}
+        <aside className="hidden md:block w-64 bg-[#1a1a1a] border-r border-[#222] p-0">
+          <Sidebar categories={categories || []} />
+        </aside>
+        {/* Main Content */}
+        <main className="flex-1 px-2 md:px-8 py-4">
+          {/* Filters Row */}
+          <div className="mb-4">
+            <Filters
+              region=""
+              age=""
+              ethnicity=""
+              fetish=""
+              language=""
+              onFilterChange={handleFilterChange}
+            />
+          </div>
+          {/* Stream Grid */}
           <StreamGrid
             streams={streams || []}
             isLoggedIn={isLoggedIn}
             balance={balance}
           />
-        </Box>
-      </Box>
-    </Box>
+        </main>
+      </div>
+    </div>
   );
 }

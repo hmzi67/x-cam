@@ -1,106 +1,11 @@
-// import { Categories, Streams } from "@/types/Schema";
-// import {
-//   Box,
-//   Card,
-//   CardContent,
-//   CardMedia,
-//   Typography,
-//   Button,
-// } from "@mui/material";
-// import Link from "next/link";
+"use client";
 
-// export default function StreamGrid({
-//   streams,
-//   isLoggedIn,
-//   balance,
-// }: {
-//   streams: Streams[];
-//   isLoggedIn: boolean;
-//   balance: number;
-// }) {
-//   const handleClick = (stream: any) => {
-//     if (!isLoggedIn || balance <= 0) return "/register";
-//     return `/stream/${stream.id}`;
-//   };
-
-//   return (
-//     <Box
-//       sx={{
-//         display: "grid",
-//         gridTemplateColumns: {
-//           xs: "1fr",
-//           sm: "repeat(2, 1fr)",
-//           md: "repeat(3, 1fr)",
-//         },
-//         gap: 2,
-//       }}
-//     >
-//       {streams.length === 0 ? (
-//         <Typography sx={{ color: "#bbb" }}>No streams available...</Typography>
-//       ) : (
-//         streams.map((stream) => (
-//           <Card
-//             key={stream.id}
-//             sx={{
-//               cursor: "pointer",
-//               transition: "transform 0.3s",
-//               "&:hover": { transform: "scale(1.05)", boxShadow: 3 },
-//             }}
-//           >
-//             <CardMedia
-//               component="img"
-//               height="180"
-//               image={stream.playback_url ?? "placeholder.jpg"}
-//               alt={stream.title ?? ""}
-//               sx={{
-//                 filter: !isLoggedIn || balance <= 0 ? "blur(10px)" : "none",
-//                 transition: "filter 0.3s",
-//               }}
-//             />
-//             <CardContent sx={{ bgcolor: "#1a1a1a", color: "white" }}>
-//               <Typography variant="h6" sx={{ mb: 1 }}>
-//                 {stream.title}
-//               </Typography>
-//               <Typography variant="body2" sx={{ color: "#bbb" }}>
-//                 Category:{" "}
-//                 {(stream.category as Categories).name || "Uncategorized"}
-//               </Typography>
-//               <Link href={handleClick(stream)} passHref>
-//                 <Button
-//                   variant="contained"
-//                   color="primary"
-//                   sx={{
-//                     mt: 2,
-//                     width: "100%",
-//                     bgcolor: "#1976d2",
-//                     "&:hover": { bgcolor: "#1565c0" },
-//                   }}
-//                 >
-//                   {isLoggedIn && balance > 0
-//                     ? "Watch Now"
-//                     : "Sign Up to Unlock"}
-//                 </Button>
-//               </Link>
-//             </CardContent>
-//           </Card>
-//         ))
-//       )}
-//     </Box>
-//   );
-// }
-import { Categories, Streams } from "@/types/Schema";
-import {
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  Button,
-  Chip,
-} from "@mui/material";
-import { PlayArrow, Lock, Public, Visibility } from "@mui/icons-material";
+import { getUser } from "@/lib/features/userSlice";
+import { useAppSelector } from "@/lib/hooks";
+import { Streams, Categories } from "@/types/Schema";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useState } from "react";
+import { Spinner } from "./stream/spinner";
 
 export default function StreamGrid({
   streams,
@@ -111,25 +16,18 @@ export default function StreamGrid({
   isLoggedIn: boolean;
   balance: number;
 }) {
+  const canJoinStream = isLoggedIn;
   const router = useRouter();
-  const canJoinStream = isLoggedIn; //&& balance > 0
-
-  const handleJoinStream = (streamId: number) => {
-    if (!canJoinStream) {
-      router.push("/register");
-      return;
-    }
-    // Navigate to stream viewer page
-    router.push(`/stream/${streamId}`);
-  };
+  const userState = useAppSelector(getUser);
+  const [loading, setLoading] = useState(false);
 
   const getStreamStatus = (stream: Streams) => {
     if (stream.status === "live") {
-      return { color: "#4caf50", text: "LIVE" };
+      return { color: "bg-green-600", text: "LIVE" };
     } else if (stream.status === "scheduled") {
-      return { color: "#ff9800", text: "SCHEDULED" };
+      return { color: "bg-yellow-500", text: "SCHEDULED" };
     }
-    return { color: "#757575", text: "OFFLINE" };
+    return { color: "bg-gray-600", text: "OFFLINE" };
   };
 
   const formatViewerCount = (count: number = 0) => {
@@ -137,204 +35,104 @@ export default function StreamGrid({
     return count.toString();
   };
 
+  const handleJoinStream = async (streamId: string | undefined) => {
+    if (!canJoinStream) {
+      router.push("/signup");
+      return;
+    }
+    if (!streamId || !userState?.first_name) {
+      console.error("Stream ID or user name missing");
+      // Optionally redirect to a profile page to set the name
+      return;
+    }
+
+    setLoading(true);
+    router.push(`/stream/watch/${streamId}`);
+  };
+
+  if (loading) return <Spinner />;
+
   return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: {
-          xs: "1fr",
-          sm: "repeat(2, 1fr)",
-          md: "repeat(3, 1fr)",
-          lg: "repeat(4, 1fr)",
-        },
-        gap: 3,
-        p: 2,
-      }}
-    >
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {streams.length === 0 ? (
-        <Box
-          sx={{
-            gridColumn: "1 / -1",
-            textAlign: "center",
-            py: 8,
-            color: "#bbb",
-          }}
-        >
-          <Typography variant="h6">No streams available</Typography>
-          <Typography variant="body2" sx={{ mt: 1 }}>
-            Be the first to go live!
-          </Typography>
-        </Box>
+        <div className="col-span-full text-center py-16 text-[#bbb]">
+          <div className="text-xl font-semibold">No streams available</div>
+          <div className="mt-2 text-sm">Be the first to go live!</div>
+        </div>
       ) : (
         streams.map((stream) => {
           const status = getStreamStatus(stream);
           return (
-            <Card
+            <div
               key={stream.id}
-              sx={{
-                position: "relative",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                background: "linear-gradient(145deg, #1e1e1e 0%, #2a2a2a 100%)",
-                border: "1px solid #333",
-                borderRadius: 2,
-                overflow: "hidden",
-                "&:hover": {
-                  transform: "translateY(-4px)",
-                  boxShadow: "0 8px 25px rgba(0,0,0,0.3)",
-                  borderColor: "#1976d2",
-                },
-              }}
-              onClick={() => handleJoinStream(stream.id)}
+              className="relative flex flex-col bg-gradient-to-br from-[#1e1e1e] to-[#2a2a2a] border border-[#333] rounded-lg overflow-hidden shadow hover:shadow-lg hover:border-blue-700 transition cursor-pointer"
             >
               {/* Stream Thumbnail */}
-              <Box sx={{ position: "relative" }}>
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={stream.playback_url ?? "/api/placeholder/400/200"}
+              <div className="relative w-full h-48">
+                <img
+                  src={stream.playback_url ?? "/api/placeholder/400/200"}
                   alt={stream.title ?? "Stream thumbnail"}
-                  sx={{
-                    filter: !canJoinStream ? "blur(10px)" : "none",
-                    transition: "filter 0.3s",
-                    objectFit: "cover",
-                  }}
+                  className={`w-full h-full object-cover transition ${
+                    !canJoinStream ? "blur-md" : ""
+                  }`}
                 />
-
                 {/* Status Badge */}
-                <Chip
-                  label={status.text}
-                  size="small"
-                  sx={{
-                    position: "absolute",
-                    top: 8,
-                    left: 8,
-                    bgcolor: status.color,
-                    color: "white",
-                    fontWeight: "bold",
-                    fontSize: "0.75rem",
-                  }}
-                />
-
+                <span
+                  className={`absolute top-2 left-2 px-2 py-1 rounded text-xs font-bold text-white ${status.color}`}
+                >
+                  {status.text}
+                </span>
                 {/* Viewer Count */}
                 {stream.status === "live" && (
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: 8,
-                      right: 8,
-                      display: "flex",
-                      alignItems: "center",
-                      bgcolor: "rgba(0,0,0,0.7)",
-                      borderRadius: 1,
-                      px: 1,
-                      py: 0.5,
-                    }}
-                  >
-                    <Visibility
-                      sx={{ fontSize: 14, mr: 0.5, color: "white" }}
-                    />
-                    <Typography
-                      variant="caption"
-                      sx={{ color: "white", fontWeight: "bold" }}
+                  <span className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
+                    <svg
+                      className="w-4 h-4 inline-block"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
                     >
-                      {formatViewerCount(Math.floor(Math.random() * 1000))}
-                    </Typography>
-                  </Box>
+                      <circle cx="12" cy="12" r="10" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    {formatViewerCount(stream?.viewer_count ?? 0)}
+                  </span>
                 )}
-
-                {/* Lock Overlay for unauthorized users */}
+                {/* Overlay for locked content */}
                 {!canJoinStream && (
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      bgcolor: "rgba(0,0,0,0.6)",
-                    }}
-                  >
-                    <Lock sx={{ fontSize: 40, color: "white", opacity: 0.8 }} />
-                  </Box>
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    <span className="bg-yellow-500 text-black px-3 py-1 rounded font-semibold text-sm">
+                      Sign Up to Unlock
+                    </span>
+                  </div>
                 )}
-              </Box>
-
+              </div>
               {/* Stream Info */}
-              <CardContent sx={{ bgcolor: "#1a1a1a", color: "white", p: 2 }}>
-                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: "1rem",
-                      lineHeight: 1.3,
-                      flexGrow: 1,
-                      mr: 1,
-                    }}
-                    noWrap
-                  >
-                    {stream.title || "Untitled Stream"}
-                  </Typography>
-                  {stream.is_public ? (
-                    <Public sx={{ fontSize: 16, color: "#4caf50" }} />
-                  ) : (
-                    <Lock sx={{ fontSize: 16, color: "#ff9800" }} />
-                  )}
-                </Box>
-
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#bbb", mb: 1, fontSize: "0.875rem" }}
-                >
-                  {(stream.category as Categories)?.name || "Uncategorized"}
-                </Typography>
-
-                {/* Creator Info */}
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                  <Typography variant="caption" sx={{ color: "#888" }}>
-                    by {(stream.creator_id as any)?.first_name || "Anonymous"}
-                  </Typography>
-                </Box>
-
-                {/* Action Button */}
-                <Link
-                  href={
+              <div className="flex-1 flex flex-col justify-between bg-[#1a1a1a] text-white p-3">
+                <div>
+                  <div className="font-semibold text-lg mb-1 truncate">
+                    {stream.title}
+                  </div>
+                  <div className="text-xs text-[#bbb] mb-1">
+                    Category:{" "}
+                    {(stream.category as Categories)?.name || "Uncategorized"}
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleJoinStream(stream?.id)}
+                  className={`mt-2 w-full text-center px-4 py-2 rounded font-semibold transition ${
                     canJoinStream
-                      ? `/stream/host/${stream.id}?role=Audience`
-                      : "/login"
-                  }
-                  passHref
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-yellow-500 hover:bg-yellow-600 text-black"
+                  }`}
                 >
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    startIcon={canJoinStream ? <PlayArrow /> : <Lock />}
-                    sx={{
-                      py: 1.5,
-                      fontSize: "0.875rem",
-                      fontWeight: 600,
-                      textTransform: "none",
-                      bgcolor: canJoinStream ? "#1976d2" : "#1976d2",
-                      "&:hover": {
-                        bgcolor: canJoinStream ? "#1565c0" : "#555",
-                        transform: "translateY(-1px)",
-                      },
-                      transition: "all 0.2s ease",
-                    }}
-                    disabled={!canJoinStream}
-                  >
-                    {canJoinStream ? "Join Stream" : "Login to Join"}
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+                  {canJoinStream ? "Watch Now" : "Sign Up to Unlock"}
+                </button>
+              </div>
+            </div>
           );
         })
       )}
-    </Box>
+    </div>
   );
 }

@@ -60,24 +60,21 @@ async function directusCreateAnItem(
   const response = await directus.request(createItem(collection, payload));
   return response;
 }
-export async function getLivekitToken(room: string,role:string) {
-  console.log("Role",role)
+export async function getLivekitToken(room: string, role: string, name?: string) {
   const cookieStore = await cookies();
   const cookieData = cookieStore.get("directus_data")?.value;
   const token = JSON.parse(cookieData as string)?.access_token;
   if (!token) throw new Error("You are not signed in.");
-  console.log({ room, url: process.env.API_URL });
-  const res = await fetch(`${process.env.API_URL}/livekit/token/${room}?role=${role}`, {
+  const query = [`role=${encodeURIComponent(role)}`];
+  if (name) query.push(`name=${encodeURIComponent(name)}`);
+  const res = await fetch(`${process.env.API_URL}/livekit/token/${room}?${query.join("&")}`, {
     headers: {
-      Authorization: `Bearer ${token}`, // pass directus auth token from cookies/session
+      Authorization: `Bearer ${token}`,
     },
-    //   cache: "no-store",
   });
-
   if (!res.ok) {
     throw new Error("Failed to fetch LiveKit token");
   }
-  console.log("Response", res);
   return res.json();
 }
 export async function startPrivateRoom(streamId: string, viewerId: string) {

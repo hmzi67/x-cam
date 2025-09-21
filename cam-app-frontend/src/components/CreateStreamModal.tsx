@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 import { createAnItem } from "@/server-actions/streams";
 import { useAppSelector } from "@/lib/hooks";
 import { getUser } from "@/lib/features/userSlice";
+import { CreateStreamResponse } from "@/lib/controller";
 
 interface CreateStreamModalProps {
   open: boolean;
@@ -57,7 +58,7 @@ export default function CreateStreamModal({
   const [errors, setErrors] = useState<Partial<Streams>>({});
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const userState = useAppSelector(getUser)
+  const userState = useAppSelector(getUser);
   if (!userState) return;
 
   const validateForm = (): boolean => {
@@ -82,34 +83,66 @@ export default function CreateStreamModal({
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+const onGoLive = async () => {
+  if (!validateForm()) return;
 
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
-    setLoading(true);
-    try {
-      const res = await createAnItem("streams", {...formData,status:"live"});
-      if (res.success) {
-        setFormData({
-          title: "",
-          category: "",
-          age_restriction: 13,
-          description: "",
-          is_public: true,
-          max_viewers: 100,
-
-        });
-        setErrors({});
-        onClose();
-        router.push(`/stream/${res.data.id}`);
-      } else {
-        setErrors({ title: res?.data as string });
-      }
+  setLoading(true);
+  try {
+    // 1️⃣ create stream in backend
+    const res = await createAnItem("streams", {
+      ...formData,
+      status: "live",
+    });
+    if (!res.success) {
+      setErrors({ title: res?.data as string });
       setLoading(false);
-      // Reset form on success
-    } catch (error) {
-      console.error("Failed to create stream:", error);
+      return;
     }
-  };
+
+    // reset form & errors
+    setFormData({
+      title: "",
+      category: "",
+      age_restriction: 13,
+      description: "",
+      is_public: true,
+      max_viewers: 100,
+    });
+    setErrors({});
+
+    const streamData = res.data;
+
+    // 2️⃣ create live room
+    const liveRes = await fetch("/api/create_stream", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        room_name: streamData?.id,
+        metadata: {
+          creator_identity: `${userState?.first_name} ${userState?.last_name}`,
+          enable_chat: true,
+          allow_participation: true,
+        },
+      }),
+    });
+
+    const {
+      auth_token,
+      connection_details: { token },
+    } = (await liveRes.json()) as CreateStreamResponse;
+
+    // 3️⃣ redirect → keep loader until navigation
+    router.push(`/stream/host?at=${auth_token}&rt=${token}`);
+
+    // close popup & stop loading after navigation
+    onClose();
+    setLoading(false);
+  } catch (error) {
+    console.error("Failed to go live:", error);
+    setLoading(false);
+  }
+};
+
 
   const handleChange = (field: keyof Streams, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -400,7 +433,7 @@ export default function CreateStreamModal({
           Cancel
         </Button>
         <Button
-          onClick={handleSubmit}
+          onClick={onGoLive}
           variant="contained"
           disabled={loading}
           startIcon={

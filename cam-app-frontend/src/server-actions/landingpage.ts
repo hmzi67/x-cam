@@ -27,6 +27,7 @@ export async function directusFetchStreams(filter: any = {}) {
     readItems("streams", {
       filter: finalFilter,
       fields: ["*", { category: ["*"] }],
+      sort:["-date_created"]
     })
   );
   return response;

@@ -4,6 +4,8 @@ import "./globals.css";
 import ThemeClient from "@/components/Themewrapper";
 import StoreProvider from "./StoreProvider";
 import NextTopLoader from "nextjs-toploader";
+import { Theme } from "@radix-ui/themes";
+import '@radix-ui/themes/styles.css'; // Don't forget the CSS
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,10 +29,11 @@ export default function RootLayout({
         style={{
           backgroundImage: `url(https://i.postimg.cc/3NLzpqPZ/groovepaper.png)`,
         }}
-      >
+      ><Theme>
         <NextTopLoader />
         {/* <ThemeClient> */}
         <StoreProvider>{children}</StoreProvider>
+        </Theme>
         {/* </ThemeClient> */}
         {/* <Footer /> */}
       </body>

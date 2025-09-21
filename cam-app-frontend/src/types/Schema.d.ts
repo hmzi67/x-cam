@@ -482,7 +482,7 @@ export type Profiles = {
 };
 
 export type Streams = {
-  age_restriction?: number | null;
+  age_restriction?: string | null;
   category?: string | Categories | null;
   creator_id?: number | Profiles | null;
   date_created?: string | null;

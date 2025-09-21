@@ -18,16 +18,15 @@ export default async function Home({
   const streams = await fetchStreams(
     filters.length ? { category: { name: { _in: filters } } } : {}
   );
-  const categories = await fetchCategories();
-  console.log("Streams fetched:", streams);
-  console.log("Categories fetched:", categories);
-
+  const categories = await fetchCategories()
+ console.log(streams)
   if (!streams.success || streams.data.length === 0) {
     return <Alert>No streams available at the moment.</Alert>;
   }
   if (!categories.success || categories.data.length === 0) {
     return <Alert>No categories available at the moment.</Alert>;
   }
+
   return (
     <Landing streams={streams.data || []} categories={categories.data || []} />
   );

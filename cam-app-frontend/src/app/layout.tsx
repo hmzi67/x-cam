@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import ThemeClient from "@/components/Themewrapper";
 import StoreProvider from "./StoreProvider";
 import NextTopLoader from "nextjs-toploader";
 import { Theme } from "@radix-ui/themes";
 import '@radix-ui/themes/styles.css'; // Don't forget the CSS
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "XCams",
@@ -25,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={inter.className}
+        className="font-sans"
         style={{
           backgroundImage: `url(https://i.postimg.cc/3NLzpqPZ/groovepaper.png)`,
         }}

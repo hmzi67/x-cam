@@ -53,7 +53,7 @@ export default function StreamGrid({
   if (loading) return <Spinner />;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
       {streams.length === 0 ? (
         <div className="col-span-full text-center py-16 text-[#bbb]">
           <div className="text-xl font-semibold">No streams available</div>
@@ -65,68 +65,110 @@ export default function StreamGrid({
           return (
             <div
               key={stream.id}
-              className="relative flex flex-col bg-gradient-to-br from-[#1e1e1e] to-[#2a2a2a] border border-[#333] rounded-lg overflow-hidden shadow hover:shadow-lg hover:border-blue-700 transition cursor-pointer"
+              className="group relative flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border border-gray-700 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:border-purple-500 transition-all duration-300 cursor-pointer transform hover:scale-[1.02]"
             >
               {/* Stream Thumbnail */}
-              <div className="relative w-full h-48">
+              <div className="relative w-full h-48 overflow-hidden">
                 <img
                   src={stream.playback_url ?? "/api/placeholder/400/200"}
                   alt={stream.title ?? "Stream thumbnail"}
-                  className={`w-full h-full object-cover transition ${
+                  className={`w-full h-full object-cover transition-all duration-300 group-hover:scale-110 ${
                     !canJoinStream ? "blur-md" : ""
                   }`}
                 />
-                {/* Status Badge */}
-                <span
-                  className={`absolute top-2 left-2 px-2 py-1 rounded text-xs font-bold text-white ${status.color}`}
-                >
-                  {status.text}
-                </span>
+                {/* Live Status Badge */}
+                <div className="absolute top-3 left-3">
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide text-white shadow-lg ${status.color}`}>
+                    {status.text}
+                  </span>
+                </div>
+                
                 {/* Viewer Count */}
                 {stream.status === "live" && (
-                  <span className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
-                    <svg
-                      className="w-4 h-4 inline-block"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                    {formatViewerCount(stream?.viewer_count ?? 0)}
-                  </span>
+                  <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-sm px-2 py-1 rounded-lg">
+                    <div className="flex items-center space-x-1 text-white text-xs">
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                        <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/>
+                      </svg>
+                      <span>{formatViewerCount(stream?.viewer_count ?? 0)}</span>
+                    </div>
+                  </div>
                 )}
-                {/* Overlay for locked content */}
+
+                {/* Hover Play Button */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <div className="bg-purple-600 hover:bg-purple-700 rounded-full p-4 transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd"/>
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Locked Content Overlay */}
                 {!canJoinStream && (
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <span className="bg-yellow-500 text-black px-3 py-1 rounded font-semibold text-sm">
-                      Sign Up to Unlock
-                    </span>
+                  <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                    <div className="text-center">
+                      <svg className="w-12 h-12 text-yellow-400 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/>
+                      </svg>
+                      <p className="text-yellow-400 text-sm font-semibold">Premium Content</p>
+                    </div>
                   </div>
                 )}
               </div>
+
               {/* Stream Info */}
-              <div className="flex-1 flex flex-col justify-between bg-[#1a1a1a] text-white p-3">
-                <div>
-                  <div className="font-semibold text-lg mb-1 truncate">
-                    {stream.title}
+              <div className="p-4 flex-1 flex flex-col bg-gray-900/80">
+                <h3 className="text-white font-semibold text-lg mb-2 line-clamp-2 group-hover:text-purple-300 transition-colors">
+                  {stream.title || "Live Stream"}
+                </h3>
+                
+                <div className="flex items-center space-x-2 mb-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xs font-bold">
+                      {stream.creator_name?.charAt(0).toUpperCase() || "?"}
+                    </span>
                   </div>
-                  <div className="text-xs text-[#bbb] mb-1">
-                    Category:{" "}
-                    {(stream.category as Categories)?.name || "Uncategorized"}
+                  <div>
+                    <p className="text-gray-300 text-sm font-medium">Anonymous Streamer</p>
+                    <p className="text-gray-500 text-xs">{(stream.category as Categories)?.name || "General"}</p>
                   </div>
                 </div>
+
+                {/* Tags */}
+                {(stream.category as Categories) && (
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    <span className="px-2 py-1 bg-purple-600/20 text-purple-300 text-xs rounded-full border border-purple-500/30">
+                      {(stream.category as Categories).name}
+                    </span>
+                  </div>
+                )}
+
+                {/* Action Button */}
                 <button
                   onClick={() => handleJoinStream(stream?.id)}
-                  className={`mt-2 w-full text-center px-4 py-2 rounded font-semibold transition ${
+                  className={`mt-auto w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 transform hover:scale-[1.02] ${
                     canJoinStream
-                      ? "bg-blue-600 hover:bg-blue-700 text-white"
-                      : "bg-yellow-500 hover:bg-yellow-600 text-black"
+                      ? "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg"
+                      : "bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black shadow-lg"
                   }`}
                 >
-                  {canJoinStream ? "Watch Now" : "Sign Up to Unlock"}
+                  {canJoinStream ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd"/>
+                      </svg>
+                      <span>Watch Now</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center space-x-2">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/>
+                      </svg>
+                      <span>Sign Up to Unlock</span>
+                    </div>
+                  )}
                 </button>
               </div>
             </div>

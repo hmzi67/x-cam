@@ -30,6 +30,7 @@ const LiveStream = ({ roomid }: { roomid: string }) => {
   const onLeave = async () => {
     await endStream(roomid);
     router.push("/stream");
+    router.refresh();
   };
 if(!userState?.id) return
   if (!token) return <div className="p-6">Loading stream...</div>;

@@ -82,17 +82,46 @@ export default function WatchPageImpl({
   return (
     <TokenContext.Provider value={authToken}>
       <LiveKitRoom serverUrl={serverUrl} token={roomToken}>
-        <Flex className="w-full h-screen">
-          <Flex direction="column" className="flex-1">
-            <Box className="flex-1 bg-gray-1">
-              <StreamPlayer />
-            </Box>
-            <ReactionBar />
-          </Flex>
-          <Box className="bg-accent-2 min-w-[280px] border-l border-accent-5">
-            <Chat />
-          </Box>
-        </Flex>
+        <div className="flex flex-col h-screen bg-[#0e0e10]">
+          {/* Stream header */}
+          <div className="bg-[#18181b] border-b border-gray-800 py-3 px-4">
+            <div className="max-w-7xl mx-auto flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <span className="bg-gradient-to-r from-purple-500 to-pink-600 text-white text-2xl font-bold px-3 py-1 rounded">
+                  XCAMS
+                </span>
+                <h1 className="text-white text-lg font-medium">{streamId}</h1>
+                <div className="flex items-center space-x-2 bg-[#2d2d33] rounded-full px-3 py-1">
+                  <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
+                  <span className="text-white text-sm font-medium">LIVE</span>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button className="bg-[#2d2d33] hover:bg-[#3d3d45] text-white rounded-full p-2 transition-colors" title="Follow">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                  Subscribe
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          {/* Main content */}
+          <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-col flex-1">
+              <Box className="flex-1 bg-black">
+                <StreamPlayer />
+              </Box>
+              <ReactionBar />
+            </div>
+            <div className="w-[350px] border-l border-gray-800 hidden sm:block">
+              <Chat />
+            </div>
+          </div>
+        </div>
       </LiveKitRoom>
     </TokenContext.Provider>
   );

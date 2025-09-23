@@ -1,34 +1,32 @@
-import { Box, Grid, Link, Typography } from '@mui/material'
+import Link from 'next/link'
 import React from 'react'
 import SignUpForm from './signup-form'
 
 export default function SignUpPage() {
   return (
-   <>
-   <Box sx={{display:"flex", flexDirection:"column", alignItems:"center"}}>
-      <Typography variant="h6" sx={{ fontWeight: "bold", mt: 3 }}>
+    <div className="flex flex-col items-center w-full">
+      <div className="text-center mb-6">
+        <h1 className="text-xl font-bold text-white mb-1">
+          Create Account
+        </h1>
+        <p className="text-sm text-gray-400">
+          Please complete the form to create your account
+        </p>
+      </div>
       
-      </Typography>
-      <Typography variant="caption" color="secondary.light" textAlign="center">
-        Please sign-up to your account
-      </Typography>
-          <SignUpForm />
-        <Box >
-        <Grid container>
-          <Grid textAlign="center">
-            <Typography variant="caption" color={"secondary.light"}>
-              Already have an account?
-            </Typography>
-            <Link 
-            href="/login"
-            sx={{ cursor: "pointer" }} variant="body2">
-              {"Sign In"}
-            </Link>
-          </Grid>
-        </Grid>
-        </Box>
+      <SignUpForm />
       
-    </Box>
-   </>
+      <div className="flex justify-center mt-4 text-sm">
+        <span className="text-gray-400 mr-1">
+          Already have an account?
+        </span>
+        <Link 
+          href="/login"
+          className="text-purple-500 hover:text-purple-400 transition-colors font-medium"
+        >
+          Sign In
+        </Link>
+      </div>
+    </div>
   )
 }

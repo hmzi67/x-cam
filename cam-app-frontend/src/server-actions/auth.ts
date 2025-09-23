@@ -14,8 +14,8 @@ export type User = {
   expires_at: number;
   expires: number;
   refresh_token_expires_at: number;
-  first_name:string;
-  last_name:string;
+  first_name: string;
+  last_name: string;
   mfa_code: number;
   mfa_code_expiry: string;
   email: string;
@@ -38,10 +38,6 @@ export const getUserData = async () => {
 
   return userdataObj;
 };
-
-
-
-
 
 export const getLoggedInUser = async (): Promise<
   { success: true; data: LoggedInUserType } | { success: false; data: unknown }
@@ -142,9 +138,19 @@ export const handleSignUp = async (formData: {
   return true;
 };
 
-
 export async function handleLogout() {
   let cookierStore = await cookies();
   cookierStore.delete(process.env.NEXT_PUBLIC_DIRECTUS_SESSION_NAME as string);
   redirect("/login");
+}
+export async function verifyEmailToken(token: string): Promise<any> {
+  const res = await fetch(
+    `${process.env.API_URL}/users/register/verify-email?token=${token}`,
+    { method: "GET", cache: "no-store" }
+  );
+
+  if (!res.ok) {
+    throw new Error("Verification failed");
+  }
+  return { success: true };
 }

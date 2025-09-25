@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
@@ -26,8 +26,12 @@ export async function directusFetchStreams(filter: any = {}) {
   const response = await directus.request(
     readItems("streams", {
       filter: finalFilter,
-      fields: ["*", { category: ["categories_name"] }],
-      sort: ["-date_created"]
+      fields: [
+        "*",
+        { category: ["categories_name"] },
+        { user_created: ["first_name", "last_name"] },
+      ],
+      sort: ["-date_created"],
     })
   );
   return response;

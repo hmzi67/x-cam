@@ -84,6 +84,55 @@ input[type="range"]::-moz-range-thumb {
   }
 }
 
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(192, 38, 211, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(192, 38, 211, 0.7);
+  }
+}
+
 .animate-modal {
   animation: modalFadeIn 0.25s ease-out forwards;
+}
+
+/* Glowing UI utility classes */
+.glow-border {
+  @apply border border-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.4)];
+}
+
+.glow-border-hover {
+  @apply hover:border-fuchsia-500 hover:shadow-[0_0_15px_rgba(192,38,211,0.5)];
+}
+
+.glow-text {
+  @apply text-fuchsia-400;
+}
+
+.glow-button {
+  @apply bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 shadow-[0_0_10px_rgba(192,38,211,0.4)] hover:shadow-[0_0_15px_rgba(192,38,211,0.6)];
 }

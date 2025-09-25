@@ -19,7 +19,7 @@ export default function RootLayout({
       if (res) dispatch(updateUser(res));
     }
     getSettings();
-  }, []);
+  }, [dispatch]);
 
   return <Box>{children}</Box>;
 }

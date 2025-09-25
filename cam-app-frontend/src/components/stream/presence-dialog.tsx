@@ -81,30 +81,50 @@ function ParticipantListItem({
         participantMetadata?.hand_raised
       ) {
         return (
-          <Button size="1" className="bg-red-600 hover:bg-red-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150" onClick={onCancel}>
+          <Button
+            size="1"
+            className="bg-red-600 hover:bg-red-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150"
+            onClick={onCancel}
+          >
             Remove
           </Button>
         );
       } else if (participantMetadata?.hand_raised) {
         return (
           <Flex gap="2">
-            <Button size="1" className="bg-green-600 hover:bg-green-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150" onClick={onInvite}>
+            <Button
+              size="1"
+              className="bg-green-600 hover:bg-green-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150"
+              onClick={onInvite}
+            >
               Accept
             </Button>
-            <Button size="1" className="bg-gray-700 hover:bg-gray-600 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150" onClick={onCancel}>
+            <Button
+              size="1"
+              className="bg-gray-700 hover:bg-gray-600 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150"
+              onClick={onCancel}
+            >
               Reject
             </Button>
           </Flex>
         );
       } else if (participantMetadata?.invited_to_stage) {
         return (
-          <Button size="1" className="bg-gray-700 text-gray-400 border-none" disabled>
+          <Button
+            size="1"
+            className="bg-gray-700 text-gray-400 border-none"
+            disabled
+          >
             Pending
           </Button>
         );
       } else if (!participantMetadata?.invited_to_stage) {
         return (
-          <Button size="1" className="bg-purple-600 hover:bg-purple-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150" onClick={onInvite}>
+          <Button
+            size="1"
+            className="bg-purple-600 hover:bg-purple-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150"
+            onClick={onInvite}
+          >
             Invite
           </Button>
         );
@@ -120,7 +140,11 @@ function ParticipantListItem({
         participantMetadata?.hand_raised
       ) {
         return (
-          <Button size="1" className="bg-red-600 hover:bg-red-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150" onClick={onCancel}>
+          <Button
+            size="1"
+            className="bg-red-600 hover:bg-red-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150"
+            onClick={onCancel}
+          >
             Leave
           </Button>
         );
@@ -130,10 +154,18 @@ function ParticipantListItem({
       ) {
         return (
           <Flex gap="2">
-            <Button size="1" className="bg-green-600 hover:bg-green-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150" onClick={onRaiseHand}>
+            <Button
+              size="1"
+              className="bg-green-600 hover:bg-green-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150"
+              onClick={onRaiseHand}
+            >
               Accept
             </Button>
-            <Button size="1" className="bg-gray-700 hover:bg-gray-600 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150" onClick={onCancel}>
+            <Button
+              size="1"
+              className="bg-gray-700 hover:bg-gray-600 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150"
+              onClick={onCancel}
+            >
               Reject
             </Button>
           </Flex>
@@ -143,7 +175,11 @@ function ParticipantListItem({
         participantMetadata?.hand_raised
       ) {
         return (
-          <Button size="1" className="bg-yellow-600 hover:bg-yellow-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150" onClick={onCancel}>
+          <Button
+            size="1"
+            className="bg-yellow-600 hover:bg-yellow-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150"
+            onClick={onCancel}
+          >
             Cancel
           </Button>
         );
@@ -152,7 +188,11 @@ function ParticipantListItem({
         !participantMetadata?.hand_raised
       ) {
         return (
-          <Button size="1" className="bg-purple-600 hover:bg-purple-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150" onClick={onRaiseHand}>
+          <Button
+            size="1"
+            className="bg-purple-600 hover:bg-purple-700 text-white border-none cursor-pointer hover:shadow-md active:scale-95 transform duration-150"
+            onClick={onRaiseHand}
+          >
             Raise Hand
           </Button>
         );
@@ -163,11 +203,16 @@ function ParticipantListItem({
 
   // Get connection status
   const isPublishing = participant.permissions?.canPublish;
-  const isOnStage = participantMetadata?.invited_to_stage && participantMetadata?.hand_raised;
+  const isOnStage =
+    participantMetadata?.invited_to_stage && participantMetadata?.hand_raised;
   const handRaised = participantMetadata?.hand_raised;
 
   return (
-    <div className={`p-2 rounded ${isCurrentUser ? 'bg-[#2d2d33]' : 'hover:bg-[#2d2d33]'} transition-colors`}>
+    <div
+      className={`p-2 rounded ${
+        isCurrentUser ? "bg-[#2d2d33]" : "hover:bg-[#2d2d33]"
+      } transition-colors`}
+    >
       <Flex justify="between" align="center">
         <Flex align="center" gap="2">
           <div className="relative">
@@ -185,26 +230,41 @@ function ParticipantListItem({
             )}
           </div>
           <div>
-            <Text className={`font-medium ${isCurrentUser ? "text-purple-400" : "text-white"}`}>
+            <Text
+              className={`font-medium ${
+                isCurrentUser ? "text-purple-400" : "text-white"
+              }`}
+            >
               {participant.identity}
               {isCurrentUser && " (you)"}
             </Text>
             <div className="flex items-center text-xs text-gray-400 mt-1">
               {isPublishing ? (
                 <span className="flex items-center">
-                  <span className="w-2 h-2 rounded-full bg-green-500 mr-1"></span> 
+                  <span className="w-2 h-2 rounded-full bg-green-500 mr-1"></span>
                   Host
                 </span>
               ) : (
                 <span className="flex items-center">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 mr-1"></span>
+                  <span className="w-2 h-2 rounded-full bg-purple-500 mr-1"></span>
                   Viewer
                 </span>
               )}
               {handRaised && !isOnStage && (
                 <span className="ml-2 flex items-center text-yellow-500">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-3 w-3 mr-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"
+                    />
                   </svg>
                   Hand Raised
                 </span>
@@ -244,8 +304,8 @@ export function PresenceDialog({
   return (
     <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <Dialog.Trigger asChild>
-        <div 
-          className="relative cursor-pointer hover:opacity-80 active:scale-95 transform transition-all duration-150" 
+        <div
+          className="relative cursor-pointer hover:opacity-80 active:scale-95 transform transition-all duration-150"
           onClick={() => setIsDialogOpen(true)}
           role="button"
           aria-label="Show participants"
@@ -255,11 +315,25 @@ export function PresenceDialog({
         </div>
       </Dialog.Trigger>
 
-      <Dialog.Content style={{ maxWidth: 450 }} className="bg-[#18181b] border border-gray-800 text-white">
+      <Dialog.Content
+        style={{ maxWidth: 450 }}
+        className="bg-[#18181b] border border-gray-800 text-white"
+      >
         <Dialog.Title>
           <Flex justify="between" align="center">
             <div className="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-500">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-purple-500"
+              >
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                 <circle cx="9" cy="7" r="4"></circle>
                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -268,8 +342,8 @@ export function PresenceDialog({
               <span className="font-medium">Stream Participants</span>
             </div>
             <Dialog.Close>
-              <IconButton 
-                variant="ghost" 
+              <IconButton
+                variant="ghost"
                 color="gray"
                 className="cursor-pointer hover:bg-gray-800 active:scale-95 transform duration-150"
               >
@@ -322,15 +396,15 @@ export function PresenceDialog({
             </div>
           )}
         </div>
-        
+
         <div className="mt-4 pt-3 border-t border-gray-700">
           <Flex justify="between" align="center">
             <Text size="1" className="text-gray-400">
               Total participants: {participants.length}
             </Text>
-            <Button 
-              variant="solid" 
-              color="gray" 
+            <Button
+              variant="solid"
+              color="gray"
               className="bg-gray-700 hover:bg-gray-600 cursor-pointer hover:shadow-md active:scale-95 transform duration-150"
               onClick={() => setIsDialogOpen(false)}
             >

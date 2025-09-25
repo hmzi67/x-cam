@@ -9,9 +9,7 @@ export const userSlice = createSlice({
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
     updateUser: (state, action: PayloadAction<User>) => {
-      console.log("Updating user state with:", action.payload);
-      state = action.payload;
-      return state;
+      return action.payload;
     },
     removeUser: (state) => {
       state = null;

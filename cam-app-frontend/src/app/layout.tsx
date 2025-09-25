@@ -29,10 +29,11 @@ export default function RootLayout({
         style={{
           backgroundImage: `url(https://i.postimg.cc/3NLzpqPZ/groovepaper.png)`,
         }}
-      ><Theme>
-        <NextTopLoader />
-        {/* <ThemeClient> */}
-        <StoreProvider>{children}</StoreProvider>
+      >
+        <Theme>
+          <NextTopLoader />
+          {/* <ThemeClient> */}
+          <StoreProvider>{children}</StoreProvider>
         </Theme>
         {/* </ThemeClient> */}
         {/* <Footer /> */}

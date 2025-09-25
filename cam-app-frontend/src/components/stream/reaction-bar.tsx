@@ -30,7 +30,7 @@ export function ReactionBar() {
     { emoji: "👏", label: "Applause", color: "from-yellow-500 to-amber-600" },
     { emoji: "🤣", label: "LOL", color: "from-yellow-400 to-yellow-600" },
     { emoji: "❤️", label: "Love", color: "from-pink-500 to-rose-600" },
-    { emoji: "🎉", label: "Confetti", color: "from-blue-500 to-purple-600" },
+    { emoji: "🎉", label: "Confetti", color: "from-purple-500 to-purple-600" },
   ];
   
   return (

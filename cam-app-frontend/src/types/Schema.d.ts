@@ -482,20 +482,21 @@ export type Profiles = {
 };
 
 export type Streams = {
-  age_restriction?: string | null;
-  category?: string | Categories | null;
+  age_restriction?: number | null;
+  category?: StreamsCategories[] | null;
   creator_id?: number | Profiles | null;
   date_created?: string | null;
   date_updated?: string | null;
   description?: string | null;
   ended_at?: string | null;
-  id: number;
+  id: string;
   ingest_url?: string | null;
   is_public?: boolean | null;
   max_viewers?: number | null;
   playback_url?: string | null;
   started_at?: string | null;
   status?: string | null;
+  thumbnail_url?: string | null;
   title?: string | null;
   user_created?: string | DirectusUsers | null;
   user_updated?: string | DirectusUsers | null;
@@ -505,6 +506,12 @@ export type Wallets = {
   balance?: number | null;
   id: number;
   user_id?: number | Profiles | null;
+};
+
+export type StreamsCategories = {
+  categories_name?: string | Categories | null;
+  id: number;
+  streams_id?: string | Streams | null;
 };
 
 export type Schema = {

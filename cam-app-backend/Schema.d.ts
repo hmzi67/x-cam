@@ -1,5 +1,6 @@
 export type Categories = {
   name: string;
+  parent_name?: string | null;
 };
 
 export type ChatMessages = {
@@ -7,9 +8,8 @@ export type ChatMessages = {
   date_updated?: string | null;
   id: number;
   message?: string | null;
-  stream_id?: number | Streams | null;
   user_created?: string | DirectusUsers | null;
-  user_id?: number | Profiles | null;
+  user_id?: string | DirectusUsers | null;
   user_updated?: string | DirectusUsers | null;
 };
 
@@ -478,36 +478,29 @@ export type Profiles = {
   display_name?: string | null;
   id: number;
   is_creator?: boolean | null;
-  user_id?: number | Users | null;
 };
 
 export type Streams = {
-  category?: string | Categories | null;
-  creator_id?: number | Profiles | null;
+  age_restriction?: number | null;
+  category: any[] | StreamsCategories[];
   date_created?: string | null;
   date_updated?: string | null;
+  description?: string | null;
   ended_at?: string | null;
-  id: number;
-  ingest_url?: string | null;
-  playback_url?: string | null;
-  started_at?: string | null;
+  id: string;
+  is_public?: boolean | null;
+  max_viewers?: number | null;
   status?: string | null;
+  thumbnail_url?: string | null;
   title?: string | null;
   user_created?: string | DirectusUsers | null;
   user_updated?: string | DirectusUsers | null;
 };
 
-export type Users = {
-  date_created?: string | null;
-  date_updated?: string | null;
-  email?: string | null;
-  first_name?: string | null;
+export type StreamsCategories = {
+  categories_name?: string | Categories | null;
   id: number;
-  last_name?: string | null;
-  password_hash?: string | null;
-  role?: string | DirectusRoles | null;
-  user_created?: string | DirectusUsers | null;
-  user_updated?: string | DirectusUsers | null;
+  streams_id?: string | Streams | null;
 };
 
 export type Wallets = {
@@ -553,6 +546,6 @@ export type Schema = {
   prices: Prices[];
   profiles: Profiles[];
   streams: Streams[];
-  users: Users[];
+  streams_categories: StreamsCategories[];
   wallets: Wallets[];
 };

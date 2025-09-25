@@ -33,10 +33,15 @@ export const getUserData = async () => {
   let userdata = cookieStore.get(
     process.env.NEXT_PUBLIC_DIRECTUS_SESSION_NAME as string
   )?.value;
-  console.log("Get User Data:", { userdata });
-  let userdataObj: User = JSON.parse(userdata || "{}");
-
-  return userdataObj;
+  if (!userdata) return null;
+  
+  try {
+    let userdataObj: User = JSON.parse(userdata);
+    return userdataObj;
+  } catch (error) {
+    console.error("Error parsing user data:", error);
+    return null;
+  }
 };
 
 export const getLoggedInUser = async (): Promise<

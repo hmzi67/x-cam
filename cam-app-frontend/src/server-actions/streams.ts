@@ -23,7 +23,7 @@ export async function fetchStreamById(
 export async function directusFetchStream(id: string) {
   const response = await directus.request(
     readItem("streams", id, {
-      fields: ["*", { category: ["*"] }],
+      fields: ["*", { category: ["categories_name"] }],
     })
   );
   return response;
